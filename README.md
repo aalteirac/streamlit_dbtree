@@ -27,7 +27,7 @@ if value is not None:
 
 ```
 ## Options
-    Show the border or not:
+    Show the border or not
 
     showBorder=<bool>
     
