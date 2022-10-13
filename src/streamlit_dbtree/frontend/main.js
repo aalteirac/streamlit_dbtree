@@ -19,11 +19,14 @@ function listenSel(){
   })
 }
 async function onRender(event) {
-  const {data,backgroundColor,fontColor,height,selectColor } = event.detail.args;
+  const {showBorder,data,backgroundColor,fontColor,height,selectColor } = event.detail.args;
   if (!window.rendered) {
     Streamlit.setFrameHeight(height+20);
     setCSSVar("--selnode",selectColor)
     setCSSVar("--fontcolor",fontColor)
+    if(showBorder==false){
+      $("#root").css("border-width","0px")
+    }
     document.getElementById("root").style.backgroundColor=backgroundColor;
     document.getElementById("root").style.height=`${height}px`;
     var datajs=[]
