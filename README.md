@@ -28,7 +28,9 @@ if value is not None:
 ```
 ## Options
     Show the border or not:
+
     showBorder=<bool>
+    
     Tree height:
     height=<int>
     Tree background color:
