@@ -1,6 +1,4 @@
 
-import getpass
-import argparse
 import snowflake.connector
 import re
 import threading
@@ -53,65 +51,6 @@ def run_sql(conn, sql, fetchall):
     return res
 
 
-def get_grants_on_object(conn, object_type, object_name, verbose, objf, ignoreshare):
-    grant_list = []
-    if object_type == 'DATABASE':
-        sql = 'show grants on DATABASE ' + object_name
-    elif object_type == 'SCHEMA':
-        sql = 'show grants on SCHEMA ' + object_name
-    elif object_type == 'STAGE':
-        sql = 'show grants on STAGE ' + object_name
-    elif object_type == 'SEQUENCE':
-        sql = 'show grants on SEQUENCE ' + object_name
-    elif object_type == 'FILE_FORMAT':
-        sql = 'show grants on FILE FORMAT ' + object_name
-    elif object_type == 'TABLE':
-        sql = 'show grants on TABLE ' + object_name
-    elif object_type == 'VIEW':
-        sql = 'show grants on VIEW ' + object_name
-    elif object_type == 'FUNCTION':
-        sql = 'show grants on FUNCTION ' + object_name
-    elif object_type == 'PROCEDURE':
-        sql = 'show grants on PROCEDURE ' + object_name
-    elif object_type == 'PIPE':
-        sql = 'show grants on PIPE ' + object_name
-    elif object_type == 'STREAM':
-        sql = 'show grants on STREAM ' + object_name
-    elif object_type == 'WAREHOUSE':
-        sql = 'show grants on WAREHOUSE ' + object_name
-    else:
-        return grant_list  # Not an option for getting GRANTS return back the empty list
-
-    show_verbose(verbose, sql)
-    grants = run_sql(conn, sql, True)
-
-    for grant in grants:
-        priv = grant[1]
-        granted_on = grant[2]
-        name = grant[3]
-        granted_to = grant[4]
-        grantee_name = grant[5]
-
-        if granted_to == 'SHARE' and ignoreshare:
-            continue
-
-        if priv == 'OWNERSHIP':
-            # Output to the grants on object file
-            printer(grantee_name + '|' + granted_to + '|' + priv + '|' + granted_on + '|' + name, objf)
-            continue
-
-        # grant_stmt = 'grant ' + priv + ' on ' + object_name + ' to ' + granted_to + ' ' + grantee_name +';'
-        grant_stmt = 'grant ' + priv + ' on ' + granted_on + ' ' + name + ' to ' + granted_to + ' ' + grantee_name + ';'
-
-        # Output to the grants on object file
-        printer(grantee_name + '|' + granted_to + '|' + priv + '|' + granted_on + '|' + name, objf)
-
-        if grant_stmt not in grant_list:
-            grant_list.append(grant_stmt)
-
-    return grant_list
-
-
 def get_database_list(conn):
     database_objects = []
     sql = 'show databases'
@@ -140,7 +79,6 @@ def get_database_list(conn):
         time.sleep(0.001)    
     return database_objects
 
-
 def get_database_schemas(conn, database_objects):
     for db in database_objects:
         sql = 'show schemas in database ' + db["name"]
@@ -155,154 +93,6 @@ def get_database_schemas(conn, database_objects):
 
     return database_objects
 
-
-def get_database_stages(conn, database_objects, verbose, just_schema, objf, ignoreshare):
-    print('--Step 3.   Getting Stages List')
-    # Loop through all the databases, or a single database and populate the stages.
-    for db in database_objects.keys():
-        if just_schema:
-            sql = 'use database ' + db
-            sqloutput = run_sql(conn, sql, False)
-            sql = 'show stages in schema ' + just_schema
-        else:
-            sql = 'show stages in database ' + db
-        show_verbose(verbose, sql)
-        stages = run_sql(conn, sql, True)
-
-        for stage in stages:
-            db_info = {}
-            role_obj = {}
-
-            created_on = stage[0]
-            name = stage[1]
-            schema = stage[3]
-            role_owner = stage[7]
-            comment = stage[8]
-            region = stage[9]
-            type = stage[10]
-
-            if type == 'EXTERNAL':
-                ddl = '--*****   External Stage, must get permssions and manually create ****   CREATE STAGE ' + db + '.' + schema + '.' + name + ';'
-            else:
-                ddl = 'CREATE STAGE ' + db + '.' + schema + '.' + name + ';'
-
-            grants_list = get_grants_on_object(conn, 'STAGE', db + '.' + schema + '.' + name, verbose, objf,
-                                               ignoreshare)
-
-            info = {'NAME': name, 'CREATED': created_on, 'OWNER': role_owner, 'COMMENT': comment, 'SCHEMA': schema,
-                    'REGION': region, 'DDL': ddl, 'TYPE': type, 'GRANTS': grants_list}
-            db_info['03-STAGES'] = info
-
-            role_obj = database_objects[db]
-
-            if role_owner in role_obj:
-                role_obj[role_owner].append(db_info)
-            else:
-                role_obj[role_owner] = []
-                role_obj[role_owner].append(db_info)
-
-            database_objects[db] = role_obj
-
-    return database_objects
-
-
-def get_database_sequences(conn, database_objects, verbose, just_schema, objf, ignoreshare):
-    print('--Step 4.   Getting Sequences List')
-    # Loop through all the databases, or a single database and populate the stages.
-    for db in database_objects.keys():
-        if just_schema:
-            sql = 'use database ' + db
-            sqloutput = run_sql(conn, sql, False)
-            sql = 'show sequences in schema ' + just_schema
-        else:
-            sql = 'show sequences in database ' + db
-        show_verbose(verbose, sql)
-        sequences = run_sql(conn, sql, True)
-
-        for sequence in sequences:
-            db_info = {}
-            role_obj = {}
-
-            name = sequence[0]
-            schema = sequence[2]
-            created_on = sequence[5]
-            role_owner = sequence[6]
-            comment = sequence[7]
-
-            sql = "select get_ddl('SEQUENCE', '" + db + '.' + schema + '.' + name + "')"
-            show_verbose(verbose, sql)
-            ddl_tup = run_sql(conn, sql, False)
-            ddl = ddl_tup[0]
-
-            grants_list = get_grants_on_object(conn, 'SEQUENCE', db + '.' + schema + '.' + name, verbose, objf,
-                                               ignoreshare)
-
-            info = {'NAME': name, 'CREATED': created_on, 'OWNER': role_owner, 'COMMENT': comment, 'SCHEMA': schema,
-                    'DDL': ddl, 'GRANTS': grants_list}
-            db_info['04-SEQUENCES'] = info
-
-            role_obj = database_objects[db]
-
-            if role_owner in role_obj:
-                role_obj[role_owner].append(db_info)
-            else:
-                role_obj[role_owner] = []
-                role_obj[role_owner].append(db_info)
-
-            database_objects[db] = role_obj
-
-    return database_objects
-
-
-def get_database_fileformats(conn, database_objects, verbose, just_schema, objf, ignoreshare):
-    print('--Step 5.   Getting FileFormats List')
-    # Loop through all the databases, or a single database and populate the stages.
-    for db in database_objects.keys():
-        if just_schema:
-            sql = 'use database ' + db
-            sqloutput = run_sql(conn, sql, False)
-            sql = 'show file formats in schema ' + just_schema
-        else:
-            sql = 'show file formats in database ' + db
-        show_verbose(verbose, sql)
-        fileformats = run_sql(conn, sql, True)
-
-        for fileformat in fileformats:
-            db_info = {}
-            role_obj = {}
-
-            name = fileformat[1]
-            schema = fileformat[3]
-            created_on = fileformat[0]
-            type = fileformat[4]
-            role_owner = fileformat[5]
-            comment = fileformat[6]
-
-            sql = "select get_ddl('FILE_FORMAT', '" + db + '.' + schema + '.' + name + "')"
-            show_verbose(verbose, sql)
-            ddl_tup = run_sql(conn, sql, False)
-            ddl = ddl_tup[0]
-
-            grants_list = get_grants_on_object(conn, 'FILE_FORMAT', db + '.' + schema + '.' + name, verbose, objf,
-                                               ignoreshare)
-
-            info = {'NAME': name, 'CREATED': created_on, 'OWNER': role_owner, 'COMMENT': comment, 'SCHEMA': schema,
-                    'DDL': ddl, 'TYPE': type, 'GRANTS': grants_list}
-            db_info['05-FILE_FORMATS'] = info
-
-            role_obj = database_objects[db]
-
-            if role_owner in role_obj:
-                role_obj[role_owner].append(db_info)
-            else:
-                role_obj[role_owner] = []
-                role_obj[role_owner].append(db_info)
-
-            database_objects[db] = role_obj
-
-    return database_objects
-
-
 def get_database_tables(conn, database_objects):
     for db in database_objects:
         for sc in db["schema"]:
@@ -314,7 +104,6 @@ def get_database_tables(conn, database_objects):
                 info = {'name': name}
                 sc["tables"].append(info) 
     return database_objects
-
 
 def get_database_views(conn, database_objects):
     for db in database_objects:
