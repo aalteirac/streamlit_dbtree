@@ -7,7 +7,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setuptools.setup(
     name="streamlit-dbtree",
-    version="0.1.0",
+    version="0.1.1",
     author="Anthony Alteirac",
     author_email="anthony@alteirac.com",
     description="Visualize Snowflake DB tree",
@@ -18,5 +18,5 @@ setuptools.setup(
     include_package_data=True,
     classifiers=[],
     python_requires=">=3.7",
-    install_requires=["streamlit>=1.2", "jinja2"],
+    install_requires=["streamlit>=1.2", "jinja2","snowflake-connector-python"],
 )
