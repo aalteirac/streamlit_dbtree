@@ -27,16 +27,16 @@ if value is not None:
 
 ```
 ## Options
-Show the border or not:
-showBorder=<bool>
-Tree height:
-height=<int>
-Tree background color:
-backgroundColor=<str> HEX value or str color like "red", "blue"
-Tree font color:
-fontColor=<str> HEX value or str color like "red", "blue"
-Tree background color for selected item(s):
-selectColor=<str> HEX value or str color like "red", "blue"
-Tree background color for hovered item(s):
-hoverColor=<str> HEX value or str color like "red", "blue"
+    Show the border or not:
+    showBorder=<bool>
+    Tree height:
+    height=<int>
+    Tree background color:
+    backgroundColor=<str> HEX value or str color like "red", "blue"
+    Tree font color:
+    fontColor=<str> HEX value or str color like "red", "blue"
+    Tree background color for selected item(s):
+    selectColor=<str> HEX value or str color like "red", "blue"
+    Tree background color for hovered item(s):
+    hoverColor=<str> HEX value or str color like "red", "blue"
 
