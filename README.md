@@ -2,7 +2,6 @@
 
 Visualize Snowflake DB tree
 
-https://youtu.be/LFjkep6btr4
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/LFjkep6btr4/0.jpg)](https://www.youtube.com/watch?v=LFjkep6btr4)
 
 ## Installation instructions 
