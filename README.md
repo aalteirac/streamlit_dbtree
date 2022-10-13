@@ -2,6 +2,9 @@
 
 Visualize Snowflake DB tree
 
+https://youtu.be/LFjkep6btr4
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/LFjkep6btr4/0.jpg)](https://www.youtube.com/watch?v=LFjkep6btr4)
+
 ## Installation instructions 
 
 ```sh
@@ -41,7 +44,7 @@ if value is not None:
 
     Tree background color for selected item(s):
     selectColor=<str> HEX value or str color like "red", "blue"
-    
+
     Tree background color for hovered item(s):
     hoverColor=<str> HEX value or str color like "red", "blue"
 
