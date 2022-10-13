@@ -1,0 +1,50 @@
+:root {
+    --selnode: #ed5858;
+    --hovernode: #e5e5e5;
+    --fontcolor:"grey"
+  }
+.jstree-themeicon.jstree-themeicon-custom {
+    background-size:contain!important  
+}
+#root{
+    overflow-y: scroll;
+    overflow-x: hidden;
+    color: var(--fontcolor);
+    border-style: solid;
+    border-width: 1px;
+    border-color: var(--fontcolor);
+    border-radius: 5px;
+}
+
+.jstree-anchor.jstree-clicked{
+    background-color: var(--selnode)!important;
+    border-radius: 5px;
+}
+.jstree-anchor.jstree-hovered{
+    background-color: var(--hovernode);
+    border-radius: 5px;
+}
+.jstree-default .jstree-anchor, .jstree-default .jstree-wholerow {
+    transition: none!important;
+}
+.dbicon {
+    background-color: var(--fontcolor)!important;
+    -webkit-mask: url(img/db.svg) no-repeat center;
+    mask: url(db.svg) no-repeat center;
+  }
+  .schema {
+    background-color: var(--fontcolor)!important;
+    -webkit-mask: url(img/schema.svg) no-repeat center;
+    mask: url(img/schema.svg) no-repeat center;
+  }
+  .table {
+    background-color: var(--fontcolor)!important;
+    -webkit-mask: url(img/table.svg) no-repeat center;
+    mask: url(img/table.svg) no-repeat center;
+  }
+  .view {
+    background-color: var(--fontcolor)!important;
+    -webkit-mask: url(img/view.svg) no-repeat center;
+    mask: url(img/view.svg) no-repeat center;
+  }  
+
