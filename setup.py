@@ -7,7 +7,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setuptools.setup(
     name="streamlit-dbtree",
-    version="0.2.2",
+    #begin     version=0.2.2,     #end
     author="Anthony Alteirac",
     author_email="anthony@alteirac.com",
     description="Visualize Snowflake DB tree",
