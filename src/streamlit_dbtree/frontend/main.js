@@ -19,11 +19,13 @@ function listenSel(){
   })
 }
 async function onRender(event) {
-  const {showBorder,data,backgroundColor,fontColor,height,selectColor } = event.detail.args;
+  const {showBorder,data,backgroundColor,fontColor,fontSelectedColor,hoverColor,height,selectColor } = event.detail.args;
   if (!window.rendered) {
     Streamlit.setFrameHeight(height+20);
     setCSSVar("--selnode",selectColor)
     setCSSVar("--fontcolor",fontColor)
+    setCSSVar("--fontselcolor",fontSelectedColor)
+    setCSSVar("--hovernode",hoverColor)
     if(showBorder==false){
       $("#root").css("border-width","0px")
     }

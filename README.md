@@ -44,6 +44,9 @@ if value is not None:
     Tree background color for selected item(s):
     selectColor=<str> HEX value or str color like "red", "blue"
 
+    Tree font color for selected item(s):
+    fontSelectedColor=<str> HEX value or str color like "red", "blue"
+
     Tree background color for hovered item(s):
     hoverColor=<str> HEX value or str color like "red", "blue"
 
