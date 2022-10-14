@@ -7,14 +7,16 @@
 .jstree-themeicon.jstree-themeicon-custom {
     background-size:contain!important  
 }
-#root{
-    overflow-y: scroll;
-    overflow-x: hidden;
-    color: var(--fontcolor);
+html{
     border-style: solid;
     border-width: 1px;
     border-color: var(--fontcolor);
     border-radius: 5px;
+}
+#root{
+    overflow-y: scroll;
+    overflow-x: hidden;
+    color: var(--fontcolor);
 }
 
 .jstree-anchor.jstree-clicked{

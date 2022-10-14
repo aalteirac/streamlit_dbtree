@@ -27,7 +27,7 @@ async function onRender(event) {
     setCSSVar("--fontselcolor",fontSelectedColor)
     setCSSVar("--hovernode",hoverColor)
     if(showBorder==false){
-      $("#root").css("border-width","0px")
+      $("html").css("border-width","0px")
     }
     document.getElementById("root").style.backgroundColor=backgroundColor;
     document.getElementById("root").style.height=`${height}px`;
