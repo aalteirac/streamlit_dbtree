@@ -35,7 +35,7 @@ class QueryThread (threading.Thread):
         self.connection = connection
         self.qtype=qtype
         self.dbo=dbo
-        self.end=False
+        self.end=False #test
 
     def run(self):  
         if(self.qtype=="sc"):                     
